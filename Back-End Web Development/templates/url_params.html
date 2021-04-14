@@ -1,0 +1,16 @@
+<html> 
+    <head></head>
+    <body>
+        {%if ctrsuccess %}
+        <div class="df_data">
+            {%for item in ctrsuccess %}
+            <ul>
+                <li>{{ item }}</li>
+            </ul>
+            {%endfor%}
+        {% else %}
+            <h4 id="no-data"> Nothing to see here! No URL-params passed </h4>
+        </div>
+        {%endif%}
+    </body>
+<html>

@@ -1,0 +1,14 @@
+<html> 
+    <head></head>
+    <body>
+        {%if ctrsuccess %}
+        <div class="df_data">
+            {%for ctrrow in ctrsuccess %}
+            <ul>
+                <li>{{ ctrrow }}</li>
+            </ul>
+            {%endfor%}
+        </div>
+        {%endif%}
+    </body>
+<html>
