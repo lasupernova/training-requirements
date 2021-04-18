@@ -3,23 +3,23 @@ from flask import Flask
 import pandas as pd
 from flask import render_template, jsonify, request
 import json
-from flask_restful import Api
+from flask_restful import Api, Resource
 from assets.assets import url_params, translation
 from database import *
 
 app = Flask(__name__)
+api = Api(app)
 
-@app.route('/')
-def hello():
-    return "Hello World!"
 
-@app.route('/api/gapminder', methods=["GET"])
-def read_data():
-    if request.method == "GET":
+class HelloWorld(Resource):
+    def get(self):
+        return {'hello' : 'world'}
+
+class GetData(Resource):
+    def get(self):
         params = {}
         for param in url_params:  #iterate over 'accepted' params and save values in dict
             if request.args.get(param):
-                # request.args.get(param).split("_")
                 params[param] = request.args.get(param)
 
         if params:
@@ -28,23 +28,23 @@ def read_data():
             jsondata = get_all()
 
 
-        return render_template('json.html', ctrsuccess=jsondata)
+        return jsondata
 
-@app.route('/api/country', methods=["GET"])
-def get_country(url_params=url_params):
-    if request.method == "GET":
-
+class GetCountry(Resource):
+    def get(self):
         params = {}
-        # print(request.args)  #gte all passed params
         for param in url_params:  #iterate over 'accepted' params and save values in dict
             if request.args.get(param):
-                # request.args.get(param).split("_")
                 params[param] = request.args.get(param)
-        # jsondata = json.loads(df.to_json(orient='records'))
 
         countries = get_countries_by_params(params)
 
-        return render_template('json.html', ctrsuccess=countries)
+        return countries
+
+
+api.add_resource(HelloWorld, '/')
+api.add_resource(GetData, '/api/gapminder')
+api.add_resource(GetCountry, '/api/country')
 
 
 def get_countries_by_params(params):
@@ -86,6 +86,6 @@ def get_translated_keys(params):
 if __name__ == '__main__':
     create_tables()
     print(get_selection_by_params({'Year':2002}))
-    print(get_country_by_params({'Year':2002, 'continent':'Asia'})[:5])
-    app.run(debug=True)
+    print(get_country_by_params({'Year':2002, 'continent':'Asia'}))
+    app.run(debug=True, host="0.0.0.0")
 

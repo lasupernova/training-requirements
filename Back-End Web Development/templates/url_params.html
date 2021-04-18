@@ -1,16 +1,49 @@
 <html> 
     <head></head>
     <body>
-        {%if ctrsuccess %}
-        <div class="df_data">
-            {%for item in ctrsuccess %}
-            <ul>
-                <li>{{ item }}</li>
-            </ul>
+        {% if ctrsuccess %}
+            {% set years = [] %}
+            {% set countries = [] %}
+            {% for item in ctrsuccess %}
+                {% set countries = countries.append(item['Country Name']) %}
+                {% if 'Year' in item.keys() %}
+                    {% set years = years.append(item['Year']) %}
+                {% endif %}
             {%endfor%}
+
+            {% if years != [] %}
+                {% for year in years | unique %}
+                    <div class="df_data">
+                        <ul>
+                            <li>{{ year }}</li>
+                            <ul>
+                                {% for item in ctrsuccess %}
+                                    {% if item['Year'] == year %}
+                                    <li>
+                                        {{ item['Country Name'] }}
+                                    </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </ul>
+                    </div>
+                {%endfor%}
+
+            {% else %}
+                {% for country in countries | unique %}
+                    <div class="df_data">
+                        <ul>
+                            <li>{{ country }}</li>
+                        </ul>
+                    </div>
+                {%endfor%}
+
+            {%endif%}
+
         {% else %}
             <h4 id="no-data"> Nothing to see here! No URL-params passed </h4>
         </div>
+
         {%endif%}
     </body>
 <html>
